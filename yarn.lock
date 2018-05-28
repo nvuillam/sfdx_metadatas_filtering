@@ -758,6 +758,10 @@ ecdsa-sig-formatter@1.0.10:
   dependencies:
     safe-buffer "^5.0.1"
 
+empty-dir@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/empty-dir/-/empty-dir-1.0.0.tgz#be3ea41ca6798dc27bb9407f035888150e4c2995"
+
 empty-folder@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/empty-folder/-/empty-folder-2.0.2.tgz#c2a3e20e95040daa96be4489435835550837d0e5"

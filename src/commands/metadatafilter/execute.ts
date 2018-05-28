@@ -12,8 +12,8 @@ export default class ExecuteFilter extends Command {
 
   static flags = {
     // flag with a value (-n, --name=VALUE)
-    packagexml: flags.string({char: 'p', description: 'Package.xml file'}),
-    inputfolder: flags.string({char: 'i', description: 'Input folder (default: current folder)'}),
+    packagexml: flags.string({char: 'p', description: 'package.xml file path'}),
+    inputfolder: flags.string({char: 'i', description: 'Input folder (default: "." )'}),
     outputfolder: flags.string({char: 'o', description: 'Output folder (default: filteredMetadatas)'})
   }
 
@@ -55,6 +55,7 @@ export default class ExecuteFilter extends Command {
         if (fs.existsSync(self.outputFolder)) {
           var emptyDir = require('empty-dir');
           emptyDir.sync(self.outputFolder);
+          console.log('KILL DIR !')
         }
         else {
           fs.mkdirSync(self.outputFolder)
@@ -89,7 +90,6 @@ export default class ExecuteFilter extends Command {
       console.log(`- Initialize processing of ${metadataType} , checking folder ${typeInputFolder}`)
 
       if (fs.existsSync(typeInputFolder)) {
-        console.log(`--- folder ${typeInputFolder} exists !`)
         var typeOutputFolder = self.outputFolder+'/'+metadataDesc.folder
         // Create member folder in output folder
         fs.mkdirSync(typeOutputFolder)
@@ -99,15 +99,13 @@ export default class ExecuteFilter extends Command {
           // Iterate all possible extensions
           metadataDesc.extensions.forEach(function(ext) {
             // If input file exists, copy it in output folder
-            var sourceFile = typeInputFolder+'/'+member+ext
-            console.log(`checking ${sourceFile}`)
-            fs.exists(sourceFile, function(exists) { 
-              if (exists) { 
-                var copyTargetFile = typeOutputFolder+'/'+member+ext
-                console.log(`Found ${sourceFile}`)
-                fs.writeFileSync(copyTargetFile, fs.readFileSync(sourceFile))
-              } 
-            }); 
+            var sourceFile = typeInputFolder + '/' + member + ext
+            if (fs.existsSync(sourceFile)) {
+              var copyTargetFile = typeOutputFolder + '/' + member + ext
+              fs.writeFileSync(copyTargetFile, fs.readFileSync(sourceFile))
+              console.log(`  - copied ${sourceFile}`)
+            }
+
 
           })
         })
@@ -125,7 +123,12 @@ export default class ExecuteFilter extends Command {
   // Describe packageXml <=> metadata folder correspondance
   describeMetadataTypes () {
     const metadataTypesDescription = {
-      'ApexClass' : { folder: 'classes' , extensions: ['.cls','.cls-meta.xml']}
+      'ApexClass' : { folder: 'classes' , extensions: ['.cls','.cls-meta.xml']},
+      'ApexComponent' : { folder: 'components' , extensions: ['.component','.component-meta.xml']},
+      'ApexPage' : { folder: 'pages' , extensions: ['.page','.page-meta.xml']},
+      'ApexTrigger' : { folder: 'triggers' , extensions: ['.trigger','.trigger-meta.xml']}
+      // NV: To complete
+      
     }
     return metadataTypesDescription
   }

@@ -41,9 +41,9 @@ USAGE
   $ sfdx_metadatas_filtering metadatafilter:execute
 
 OPTIONS
-  -i, --inputfolder=inputfolder    Input folder (default: current folder)
+  -i, --inputfolder=inputfolder    Input folder (default: "." )
   -o, --outputfolder=outputfolder  Output folder (default: filteredMetadatas)
-  -p, --packagexml=packagexml      Package.xml file
+  -p, --packagexml=packagexml      package.xml file path
 
 EXAMPLES
   $ oclif-example execute -p myPackage.xml

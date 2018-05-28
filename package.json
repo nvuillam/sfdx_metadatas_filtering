@@ -9,6 +9,7 @@
     "@oclif/config": "1",
     "@oclif/errors": "1",
     "@salesforce/command": "0.1.2",
+    "empty-dir": "^1.0.0",
     "empty-folder": "^2.0.2"
   },
   "devDependencies": {
@@ -49,7 +50,7 @@
   },
   "repository": "nvuillam/sfdx_metadatas_filtering",
   "scripts": {
-    "postpack": "rm -f .oclif.manifest.json && rm -f .oclif.manifest.json",
+    "postpack": "rm -f .oclif.manifest.json && rm -f .oclif.manifest.json && rm -f .oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
