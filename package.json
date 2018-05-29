@@ -9,8 +9,7 @@
     "@oclif/config": "1",
     "@oclif/errors": "1",
     "@salesforce/command": "0.1.2",
-    "empty-dir": "^1.0.0",
-    "empty-folder": "^2.0.2"
+    "fs-extra": "^6.0.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1",

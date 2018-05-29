@@ -39,6 +39,7 @@ export default class ExecuteFilter extends Command {
 
     // Read package.xml file
     var fs = require('fs'),
+    fse = require('fs-extra'),
     xml2js = require('xml2js'),
     util = require('util');
     var parser = new xml2js.Parser();
@@ -53,9 +54,8 @@ export default class ExecuteFilter extends Command {
 
         // Create output folder/empty it if existing
         if (fs.existsSync(self.outputFolder)) {
-          var emptyDir = require('empty-dir');
-          emptyDir.sync(self.outputFolder);
-          console.log('KILL DIR !')
+          console.log('Empty target directory')
+          fse.emptyDirSync(self.outputFolder);
         }
         else {
           fs.mkdirSync(self.outputFolder)
@@ -72,6 +72,7 @@ export default class ExecuteFilter extends Command {
   // Filter metadatas by type
   filterMetadatasByType() {
     var fs = require('fs')
+    const fse = require('fs-extra')
     var path = require('path')
     var self = this
     this.packageXmlMetadatasTypeLs.forEach(function(metadataDefinition){
@@ -95,17 +96,15 @@ export default class ExecuteFilter extends Command {
         fs.mkdirSync(typeOutputFolder)
 
         // Iterate all metadata types members
-        members.forEach(function(member){
+        members.forEach(function (member) {
           // Iterate all possible extensions
-          metadataDesc.extensions.forEach(function(ext) {
+          metadataDesc.nameSuffixList.forEach(function (nameSuffix) {
             // If input file exists, copy it in output folder
-            var sourceFile = typeInputFolder + '/' + member + ext
+            var sourceFile = typeInputFolder + '/' + member + nameSuffix
             if (fs.existsSync(sourceFile)) {
-              var copyTargetFile = typeOutputFolder + '/' + member + ext
-              fs.writeFileSync(copyTargetFile, fs.readFileSync(sourceFile))
-              console.log(`  - copied ${sourceFile}`)
+              var copyTargetFile = typeOutputFolder + '/' + member + nameSuffix
+              fse.copySync(sourceFile, copyTargetFile)
             }
-
 
           })
         })
@@ -123,10 +122,11 @@ export default class ExecuteFilter extends Command {
   // Describe packageXml <=> metadata folder correspondance
   describeMetadataTypes () {
     const metadataTypesDescription = {
-      'ApexClass' : { folder: 'classes' , extensions: ['.cls','.cls-meta.xml']},
-      'ApexComponent' : { folder: 'components' , extensions: ['.component','.component-meta.xml']},
-      'ApexPage' : { folder: 'pages' , extensions: ['.page','.page-meta.xml']},
-      'ApexTrigger' : { folder: 'triggers' , extensions: ['.trigger','.trigger-meta.xml']}
+      'ApexClass' : { folder: 'classes' , nameSuffixList: ['.cls','.cls-meta.xml']},
+      'ApexComponent' : { folder: 'components' , nameSuffixList: ['.component','.component-meta.xml']},
+      'ApexPage' : { folder: 'pages' , nameSuffixList: ['.page','.page-meta.xml']},
+      'ApexTrigger' : { folder: 'triggers' , nameSuffixList: ['.trigger','.trigger-meta.xml']}, 
+      'AuraDefinitionBundle' : { folder: 'aura' , nameSuffixList: ['']},
       // NV: To complete
       
     }
