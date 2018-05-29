@@ -16,6 +16,11 @@ WARNING: This version does not support yet the filtering of .objects description
 [![Greenkeeper](https://badges.greenkeeper.io/nvuillam/sfdx_metadatas_filtering.svg)](https://greenkeeper.io/)
 [![Known Vulnerabilities](https://snyk.io/test/github/nvuillam/sfdx_metadatas_filtering/badge.svg)](https://snyk.io/test/github/nvuillam/sfdx_metadatas_filtering) -->
 
+# INSTALLATION
+
+```
+    sfdx plugins:install sfdx_metadatas_filtering
+```
 
 # COMMANDS
 
