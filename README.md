@@ -49,6 +49,30 @@ Filter metadatas folder with your own package.xml
 <!-- tocstop -->
 * [Debugging your plugin](#debugging-your-plugin)
 <!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
+* [Debugging your plugin](#debugging-your-plugin)
+<!-- tocstop -->
 * [Debugging your plugin](#debugging-your-plugin)
 <!-- tocstop -->
 <!-- install -->

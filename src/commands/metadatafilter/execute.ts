@@ -56,15 +56,18 @@ export default class ExecuteFilter extends Command {
   outputFolder
 
   // Internal properties
+  fs = require('fs')
+  fse = require('fs-extra')
+  xml2js = require('xml2js')
+  util = require('util')
+  path = require('path')
   packageXmlMetadatasTypeLs = []
-  summaryResult = { metadataTypes: {} }
+  sobjectCollectedInfo = {}
+  summaryResult = { metadataTypes: {} , objects: [] }
 
+  // Runtime methods
   async run() {
-    var fs = require('fs'),
-      fse = require('fs-extra'),
-      xml2js = require('xml2js'),
-      util = require('util');
-
+    
     const { args, flags } = this.parse(ExecuteFilter)
 
     // Get input arguments or default values
@@ -74,27 +77,28 @@ export default class ExecuteFilter extends Command {
     this.log(`Initialize filtering of ${this.inputFolder} ,using ${this.packageXmlFile} , into ${this.outputFolder}`)
 
     // Read package.xml file
-    var parser = new xml2js.Parser();
+    var parser = new this.xml2js.Parser();
     var self = this
-    fs.readFile(this.packageXmlFile, function (err, data) {
+    this.fs.readFile(this.packageXmlFile, function (err, data) {
       parser.parseString(data, function (err2, result) {
-        console.log(`Parsed package.xml \n` + util.inspect(result, false, null))
+        console.log(`Parsed package.xml \n` + self.util.inspect(result, false, null))
 
         // get metadata types in parse result
         try { self.packageXmlMetadatasTypeLs = result.Package.types }
         catch { throw 'Unable to parse packageXml file ' + self.packageXmlFile }
 
         // Create output folder/empty it if existing
-        if (fs.existsSync(self.outputFolder)) {
+        if (self.fs.existsSync(self.outputFolder)) {
           console.log('Empty target directory')
-          fse.emptyDirSync(self.outputFolder);
+          self.fse.emptyDirSync(self.outputFolder);
         }
         else {
-          fs.mkdirSync(self.outputFolder)
+          self.fs.mkdirSync(self.outputFolder)
         }
 
         // Process source folder filtering and copy files into target folder
         self.filterMetadatasByType()
+        self.copyImpactedObjects()
         self.displayResults()
       });
     });
@@ -103,9 +107,6 @@ export default class ExecuteFilter extends Command {
 
   // Filter metadatas by type
   filterMetadatasByType() {
-    var fs = require('fs')
-    const fse = require('fs-extra')
-    var path = require('path')
     var self = this
     this.packageXmlMetadatasTypeLs.forEach(function (metadataDefinition) {
       var metadataType = metadataDefinition.name
@@ -117,29 +118,37 @@ export default class ExecuteFilter extends Command {
       if (metadataDesc == null) {
         return
       }
+      if (metadataDesc.folder != null)
+         self.copyMetadataFiles(metadataDesc,metadataType,members)
+      else if (metadataDesc.sobjectRelated === true)
+        self.collectObjectDescription(metadataType,members) 
 
+    });
+  }
+
+  copyMetadataFiles(metadataDesc,metadataType,members) {
       // Browse folder for matching files and copy them into target folder
-      var typeInputFolder = self.inputFolder + '/' + metadataDesc.folder
+      var typeInputFolder = this.inputFolder + '/' + metadataDesc.folder
       console.log(`- processing ${metadataType}`)
-      if (fs.existsSync(typeInputFolder)) {
-        var typeOutputFolder = self.outputFolder + '/' + metadataDesc.folder
+      if (this.fs.existsSync(typeInputFolder)) {
+        var typeOutputFolder = this.outputFolder + '/' + metadataDesc.folder
         if (members != null && members[0] === '*') {
           // Wildcard: copy whole folder
-          fse.copySync(typeInputFolder, typeOutputFolder)
+          this.fse.copySync(typeInputFolder, typeOutputFolder)
         }
         else {
           // Create member folder in output folder
-          fs.mkdirSync(typeOutputFolder)
-
+          this.fs.mkdirSync(typeOutputFolder)
+          var self = this
           // Iterate all metadata types members (ApexClass,ApexComponent,etc...)
           members.forEach(function (member) {
             // Iterate all possible extensions ( '' for same file/folder name, '.cls' for ApexClass, etc ...)
             metadataDesc.nameSuffixList.forEach(function (nameSuffix) {
               // If input file/folder exists, copy it in output folder
               var sourceFile = typeInputFolder + '/' + member + nameSuffix
-              if (fs.existsSync(sourceFile)) {
+              if (self.fs.existsSync(sourceFile)) {
                 var copyTargetFile = typeOutputFolder + '/' + member + nameSuffix
-                fse.copySync(sourceFile, copyTargetFile)
+                self.fse.copySync(sourceFile, copyTargetFile)
                 // Increment counter only when file is not meta-xml
                 if (!sourceFile.endsWith('meta-xml')) {
                   self.summaryResult.metadataTypes[metadataType]['nbCopied']++
@@ -150,9 +159,22 @@ export default class ExecuteFilter extends Command {
 
         }
       }
-    });
   }
 
+  // Special case of SObjects: collect references to them in MetadataTypes
+  collectObjectDescription(metadataType,members) {
+    var self = this
+    members.forEach(function (member) {
+        var sobjectName = member.split('.')[0]
+        var sobjectInfo = self.sobjectCollectedInfo[sobjectName] || {}
+        if (metadataType != 'CustomObject' && member.split('.')[1] != null) {
+        var sobjectInfoMetadataTypeList = sobjectInfo[metadataType] || []
+          sobjectInfoMetadataTypeList.push(member.split('.')[1])
+          sobjectInfo[metadataType] = sobjectInfoMetadataTypeList
+        }
+        self.sobjectCollectedInfo[sobjectName] = sobjectInfo
+    })
+  }
 
   // Describe packageXml <=> metadata folder correspondance
   describeMetadataTypes() {
@@ -161,6 +183,7 @@ export default class ExecuteFilter extends Command {
     // nameSuffixList are the files and/or folder names , built from the name of the package.xml item ( in <members> )
 
     const metadataTypesDescription = {
+      // Metadatas to use for copy
       'ApexClass': { folder: 'classes', nameSuffixList: ['.cls', '.cls-meta.xml'] },
       'ApexComponent': { folder: 'components', nameSuffixList: ['.component', '.component-meta.xml'] },
       'ApexPage': { folder: 'pages', nameSuffixList: ['.page', '.page-meta.xml'] },
@@ -169,7 +192,6 @@ export default class ExecuteFilter extends Command {
       'CustomApplication': { folder: 'applications', nameSuffixList: ['.app'] },
       'CustomLabel': { folder: 'labels', nameSuffixList: [''] },
       'CustomMetadata': { folder: 'customMetadata', nameSuffixList: ['.md'] },
-      'CustomObject': { folder: 'objects', nameSuffixList: ['.object'] },
       'CustomObjectTranslation': { folder: 'objectTranslations', nameSuffixList: ['.objectTranslation'] },
       'CustomTab': { folder: 'tabs', nameSuffixList: ['.tab'] },
       'Document': { folder: 'documents', nameSuffixList: ['', '-meta.xml'] },
@@ -189,9 +211,15 @@ export default class ExecuteFilter extends Command {
       'StandardValueSet': { folder: 'standardValueSets', nameSuffixList: ['.standardValueSet'] },
       'StaticResource': { folder: 'staticresources', nameSuffixList: ['.resource', '.resource-meta.xml'] },
       'Translations': { folder: 'translations', nameSuffixList: ['.translation'] },
-      'Workflow': { folder: 'workflows', nameSuffixList: ['.workflow'] }
+      'Workflow': { folder: 'workflows', nameSuffixList: ['.workflow'] },
 
-      // Not taken in account yet list : BusinessProcess, CustomField , ListView , RecordType , WebLink
+      // Metadatas to use for building objects folder ( SObjects )
+      'BusinessProcess': { sobjectRelated: true },
+      'CustomField': { sobjectRelated: true },
+      'CustomObject': { sobjectRelated: true },
+      'ListView': {sobjectRelated: true },
+      'RecordType': {sobjectRelated: true },
+      'WebLink' : {sobjectRelated: true }
 
     }
     return metadataTypesDescription
@@ -203,10 +231,20 @@ export default class ExecuteFilter extends Command {
     return desc
   }
 
+  // Copy objects based on information gathered with 'sobjectRelated' metadatas
+  copyImpactedObjects() {
+    var self = this
+    Object.keys(this.sobjectCollectedInfo).forEach(function(objectName) {
+      //NV:  Warning: this tool will be completed when .object file will be filtered to keep only related CustomFields, BusinessProcess, etc ... gathered from package.xml
+      self.fse.copySync(self.inputFolder+'/objects/'+objectName+'.object', self.outputFolder+'/objects/'+objectName+'.object')
+      self.summaryResult.objects.push(objectName)
+    });
+    self.summaryResult.objects.sort()
+  }
+
   // Display results as JSON
   displayResults() {
-    const util = require('util');
-    console.log(util.inspect(this.summaryResult, false, null))
+    console.log(this.util.inspect(this.summaryResult, false, null))
   }
 
 
