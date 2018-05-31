@@ -73,9 +73,15 @@ DESCRIPTION
   
 
 EXAMPLES
+
   $ sfdx metadatafilter:execute -p myPackage.xml
 
   $ sfdx metadatafilter:execute -i md_api_output_dir -p myPackage.xml -o md_api_filtered_output_dir
+
+  $ sfdx force:source:convert -d tmp/deployDemoQuali/
+  $ sfdx metadatafilter:execute -i tmp/deployDemoQuali/ -p myPackage.xml -o tmp/deployDemoQualiFiltered/
+  $ sfdx force:mdapi:deploy -d tmp/deployDemoQualiFiltered/ -w 60 -u DemoQuali
+
 ```
 
 _See code: [src/commands/metadatafilter/execute.ts](https://github.com/nvuillam/sfdx_metadatas_filtering/blob/v0.0.0/src/commands/metadatafilter/execute.ts)_
