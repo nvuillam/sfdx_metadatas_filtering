@@ -97,6 +97,9 @@ export default class ExecuteFilter extends Command {
           self.fs.mkdirSync(self.outputFolder)
         }
 
+        // Copy package.xml file in output folder
+        self.fse.copySync(self.packageXmlFile, self.outputFolder+'/package.xml')
+
         // Process source folder filtering and copy files into target folder
         self.filterMetadatasByType()
         self.copyImpactedObjects()
