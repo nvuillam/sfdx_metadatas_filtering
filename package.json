@@ -1,7 +1,7 @@
 {
   "name": "sfdx_metadatas_filtering",
   "description": "Filter metadatas folder (usually from force:source:convert) with your own package.xml file",
-  "version": "0.3.3",
+  "version": "0.6.1",
   "author": "NicolasVuillamy",
   "bugs": "https://github.com/nvuillam/sfdx_metadatas_filtering/issues",
   "dependencies": {
