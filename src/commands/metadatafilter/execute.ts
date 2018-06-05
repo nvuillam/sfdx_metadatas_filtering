@@ -291,7 +291,7 @@ export default class ExecuteFilter extends Command {
       'CustomObjectTranslation': { folder: 'objectTranslations', nameSuffixList: ['.objectTranslation'] },
       'CustomTab': { folder: 'tabs', nameSuffixList: ['.tab'] },
       'Document': { folder: 'documents', nameSuffixList: ['', '-meta.xml'] },
-      'EmailTemplate': { folder: 'email', nameSuffixList: ['', '-meta.xml'] },
+      'EmailTemplate': { folder: 'email', nameSuffixList: ['.email', '.email-meta.xml'] },
       'EscalationRules': { folder: 'escalationRules', nameSuffixList: ['.escalationRules'] },
       'FlexiPage': { folder: 'flexipages', nameSuffixList: ['.flexipage'] },
       'GlobalValueSet': { folder: 'globalValueSets', nameSuffixList: ['.globalValueSet'] },
