@@ -233,24 +233,24 @@ export default class ExecuteFilter extends Command {
       var packageXmlPropName = objectFilterProp['packageXmlPropName']
       var nameProperty = objectFilterProp['nameProperty']
       if (parsedObjectFile['CustomObject'][objectXmlPropName] != null) {
-        var pos = 0
+
         var compareList = objectContentToKeep[packageXmlPropName] || []
         if (parsedObjectFile['CustomObject'][objectXmlPropName] == null) {
           console.warn('/!\ can not filter ' + objectXmlPropName + ' : not found')
         } else {
+          var pos = 0
           parsedObjectFile['CustomObject'][objectXmlPropName].forEach(function (itemDscrptn) {
             var itemName = itemDscrptn[nameProperty]
             if (!self.arrayIncludes(compareList,itemName)) {
-              console.log(`-- removed ${packageXmlPropName} ` + itemDscrptn[nameProperty])
+              console.log(`---- removed ${packageXmlPropName} ` + itemDscrptn[nameProperty])
               delete parsedObjectFile['CustomObject'][objectXmlPropName][pos]
             }
             else {
               console.log(`-- kept ${packageXmlPropName} ` + itemDscrptn[nameProperty])
             }
-
+            pos++
           })
         }
-        pos++
       }
     });
 
