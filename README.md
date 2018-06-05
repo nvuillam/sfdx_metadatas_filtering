@@ -39,13 +39,14 @@ OPTIONS
 
 DESCRIPTION
   
-     Metadata types currently managed:
+     Package.xml types currently managed:
 
      - ApexClass
      - ApexComponent
      - ApexPage
      - ApexTrigger
      - AuraDefinitionBundle
+     - ContentAsset
      - CustomApplication
      - CustomLabel
      - CustomMetadata
