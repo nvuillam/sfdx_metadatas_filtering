@@ -78,11 +78,14 @@ DESCRIPTION
      - Translations
      - WebLink
      - Workflow
-  
+
+```
+
 _See [conversion tables](https://github.com/nvuillam/sfdx_metadatas_filtering/blob/d1567782218fce3ba800a5e752aff45b54980585/src/commands/metadatafilter/execute.ts#L239)_
 
 EXAMPLES
 
+```
   $ sfdx metadatafilter:execute -p myPackage.xml
 
   $ sfdx metadatafilter:execute -i md_api_output_dir -p myPackage.xml -o md_api_filtered_output_dir
