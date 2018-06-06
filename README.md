@@ -81,7 +81,7 @@ DESCRIPTION
 
 ```
 
-_See [conversion tables](https://github.com/nvuillam/sfdx_metadatas_filtering/blob/d1567782218fce3ba800a5e752aff45b54980585/src/commands/metadatafilter/execute.ts#L239)_
+_See [conversion tables](https://github.com/nvuillam/sfdx_metadatas_filtering/blob/d1567782218fce3ba800a5e752aff45b54980585/src/commands/metadatafilter/execute.ts#L280)_
 
 EXAMPLES
 
