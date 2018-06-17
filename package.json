@@ -42,7 +42,7 @@
   "keywords": [
     "sfdx-plugin"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "oclif": {
     "commands": "./lib/commands",
     "devPlugins": [
