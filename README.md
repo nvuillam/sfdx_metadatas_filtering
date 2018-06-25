@@ -1,6 +1,12 @@
 sfdx_metadatas_filtering
 ========================
 
+#WARNING
+
+ No longer maintained , moved to [https://github.com/nvuillam/sfdx-essentials](https://github.com/nvuillam/sfdx-essentials)
+
+#PLUGIN
+
 Filter metadatas folder with your own package.xml file
 
 This can help if you need to deploy only part of the result of sfdx force:source:convert into a org, by filtering the result (usually in mdapi_output_dir) to keep only the items referenced in your own package.xml file
