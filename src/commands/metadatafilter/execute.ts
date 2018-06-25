@@ -33,6 +33,9 @@ export default class ExecuteFilter extends Command {
   // Runtime methods
   async run() {
 
+    console.log('WARNING: this plugin is no longer maintained')
+    console.log('MOVED TO https://github.com/nvuillam/sfdx-essentials')
+
     const { args, flags } = this.parse(ExecuteFilter)
 
     // Get input arguments or default values
